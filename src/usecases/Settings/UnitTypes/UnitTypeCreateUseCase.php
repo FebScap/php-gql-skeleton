@@ -2,12 +2,8 @@
 
 namespace Vertuoza\Usecases\Settings\UnitTypes;
 
-use Monolog\Logger;
 use React\Promise\Promise;
-use Vertuoza\Api\Graphql\Context\RequestContext;
 use Vertuoza\Api\Graphql\Context\UserRequestContext;
-use Vertuoza\Api\Graphql\Resolvers\Settings\UnitTypes\UnitType;
-use Vertuoza\Api\Graphql\Resolvers\Settings\UnitTypes\UnitTypeCreateInput;
 use Vertuoza\Entities\Settings\UnitTypeEntity;
 use Vertuoza\Repositories\RepositoriesFactory;
 use Vertuoza\Repositories\Settings\UnitTypes\UnitTypeMutationData;
@@ -26,14 +22,17 @@ class UnitTypeCreateUseCase
     }
 
     /**
-     * @param string $input name of the new Unit type
+     * @param array $input name of the new Unit type
      * @return Promise<UnitTypeEntity> that was created
      */
-    public function handle(String $input): Promise
+    public function handle(array $input): Promise
     {
         $data = new UnitTypeMutationData();
-        $data->name = $input;
-        $id = $this->unitTypeRepository->create($data, $this->userContext->getTenantId());
-        return $this->unitTypeRepository->getById($id, $this->userContext->getTenantId());
+        $data->name = $input['name'];
+
+        return $this->unitTypeRepository->getById(
+            $this->unitTypeRepository->create($data, $this->userContext->getTenantId()),
+            $this->userContext->getTenantId()
+        );
     }
 }
