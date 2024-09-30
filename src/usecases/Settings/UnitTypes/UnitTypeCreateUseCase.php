@@ -23,16 +23,15 @@ class UnitTypeCreateUseCase
 
     /**
      * @param array $input name of the new Unit type
-     * @return Promise<UnitTypeEntity> that was created
+     * @return Promise that was created
      */
     public function handle(array $input): Promise
     {
         $data = new UnitTypeMutationData();
         $data->name = $input['name'];
 
-        return $this->unitTypeRepository->getById(
-            $this->unitTypeRepository->create($data, $this->userContext->getTenantId()),
-            $this->userContext->getTenantId()
-        );
+        $id = $this->unitTypeRepository->create($data, $this->userContext->getTenantId());
+
+        return $this->unitTypeRepository->getById($id, $this->userContext->getTenantId());
     }
 }

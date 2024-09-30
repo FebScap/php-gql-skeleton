@@ -117,7 +117,7 @@ class UnitTypeRepository
     $newId = $this->getQueryBuilder()->insertGetId(
       UnitTypeMapper::serializeCreate($data, $tenantId)
     );
-    return $newId;
+    return  $this->getQueryBuilder()->orderby('created_at', 'DESC')->first()->id;
   }
 
   public function update(string $id, UnitTypeMutationData $data)
